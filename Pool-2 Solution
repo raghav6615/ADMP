@@ -1,0 +1,36 @@
+ASSUME CS:CODE, DS:DATA
+DATA SEGMENT 
+    WORD DB "exercise$" 
+    COUNT EQU $-WORD
+    TO_FIND DB "e"
+
+    COUNT_E DB 01 DUP(?)
+DATA ENDS             
+
+CODE SEGMENT
+START: 
+     MOV AX,DATA
+     MOV DS,AX
+     CLD   
+     XOR BL,BL
+     MOV CX,COUNT 
+     
+     MOV ES,AX
+     LEA DI,WORD
+     MOV AL,TO_FIND
+     
+LOOP_:
+     SCASB 
+     JZ FOUND
+NEXT:
+     DEC CX
+     JNZ LOOP_
+     LEA DI,COUNT_E
+     MOV [DI], BL
+     MOV AH,4CH
+     INT 21H
+     
+FOUND:INC BL
+      JMP NEXT
+CODE ENDS
+END START
