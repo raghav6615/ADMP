@@ -1,0 +1,18 @@
+< THE SYMBOL TABLE >  keypad.exe  --  emu8086 assembler version: 4.08 
+===================================================================================================
+Name                     	Offset    	Size      	Type      	Segment   
+===================================================================================================
+DATA                     	00000     	-5        	SEGMENT   	(ITSELF)  
+KEYCODE                  	00000     	1         	VAR       	DATA      
+CODE                     	00001     	-5        	SEGMENT   	(ITSELF)  
+START                    	00000     	-1        	LABEL     	CODE      
+LOOP1                    	00014     	-1        	LABEL     	CODE      
+CHECK                    	0001A     	-1        	LABEL     	CODE      
+FIND_COL                 	00020     	-1        	LABEL     	CODE      
+FIND_ROW                 	0002B     	-1        	LABEL     	CODE      
+LOOP2                    	0002F     	-1        	LABEL     	CODE      
+FOUND_ROW                	00046     	-1        	LABEL     	CODE      
+===================================================================================================
+[ 19-03-2020  --  16:40:22 ] 
+< END >
+ 

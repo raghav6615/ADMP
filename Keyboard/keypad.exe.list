@@ -1,0 +1,132 @@
+EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
+ 
+keypad.exe -- emu8086 assembler version: 4.08  
+ 
+[ 19-03-2020  --  16:40:22 ] 
+ 
+===================================================================================================
+[LINE]     LOC: MACHINE CODE                          SOURCE
+===================================================================================================
+ 
+[   1]        :                                       ASSUME CS:CODE, DS:DATA
+[   2]        :                                       PORTA1 EQU 8000H
+[   3]        :                                       PORTB1 EQU 8002H
+[   4]        :                                       PORTC1 EQU 8004H
+[   5]        :                                       CWR1   EQU 8006H
+[   6]        :                                       
+[   7]        :                                       PORTA2 EQU 9000H
+[   8]        :                                       PORTB2 EQU 9002H
+[   9]        :                                       PORTC2 EQU 9004H
+[  10]        :                                       CWR2   EQU 9006H
+[  11]        :                                       
+[  12]        :                                       DATA SEGMENT
+[  13]    0000: 01 02 03 04 05 06 07 08 09 0A         KEYCODE DB 01H,02H,03H,04H,05H,06H,07H,08H,09H,0AH
+[  14]        :                                       DATA ENDS
+[  15]        :                                       
+[  16]        :                                       CODE SEGMENT
+[  17]    0010:                                       START:
+[  18]        :                                       ;INITIALIZING DATA SEGMENT
+[  19]    0010: B8 00 00                              MOV AX,DATA
+[  20]    0013: 8E D8                                 MOV DS,AX
+[  21]        :                                       ;WRITING CONTROL WORD FOR 8255-1
+[  22]    0015: B0 82                                 MOV AL,82H
+[  23]    0017: BA 06 80                              MOV DX,CWR1
+[  24]    001A: EE                                    OUT DX,AL
+[  25]        :                                       ;MAKING ALL ROWS ZERO
+[  26]    001B: B0 00                                 MOV AL,00H
+[  27]    001D: BA 00 80                              MOV DX,PORTA1
+[  28]    0020: EE                                    OUT DX,AL
+[  29]        :                                       ;READING THE COLUMNS
+[  30]    0021: BA 02 80                              MOV DX,PORTB1
+[  31]    0024:                                       LOOP1:
+[  32]    0024: EC                                    IN AL,DX
+[  33]        :                                       ;CHECKING IF ANY KEY IS PRESSED
+[  34]    0025: 3C FF                                 CMP AL,0FFH
+[  35]    0027: 75 FB                                 JNZ LOOP1
+[  36]        :                                       ;FOR REAL
+[  37]    0029: EC                                    IN AL,DX
+[  38]    002A:                                       CHECK:
+[  39]    002A: 3C FF                                 CMP AL,0FFH
+[  40]    002C: 74 FC                                 JZ CHECK
+[  41]        :                                       ;GETTING KEYCODE
+[  42]    002E: B3 01                                 MOV BL,01H
+[  43]    0030:                                       FIND_COL:
+[  44]    0030: D0 D8                                 RCR AL,01H
+[  45]    0032: 73 07                                 JNC FIND_ROW
+[  46]    0034: FE C3                                 INC BL
+[  47]    0036: 80 FB 08                              CMP BL,08H
+[  48]    0039: 75 F5                                 JNZ FIND_COL
+[  49]        :                                       ;GETTING ROW
+[  50]    003B:                                       FIND_ROW:
+[  51]    003B: B1 01                                 MOV CL,01H
+[  52]    003D: B5 01                                 MOV CH,01H
+[  53]    003F:                                       LOOP2:
+[  54]    003F: 8A C5                                 MOV AL,CH
+[  55]    0041: BA 00 80                              MOV DX,PORTA1
+[  56]    0044: EE                                    OUT DX,AL
+[  57]    0045: BA 02 80                              MOV DX,PORTB1
+[  58]    0048: EC                                    IN AL,DX
+[  59]    0049: 3C FF                                 CMP AL,0FFH
+[  60]    004B: 75 09                                 JNZ FOUND_ROW
+[  61]    004D: D0 C5                                 ROL CH,01H
+[  62]    004F: FE C1                                 INC CL
+[  63]    0051: 80 F9 08                              CMP CL,08H
+[  64]    0054: 75 E9                                 JNZ LOOP2
+[  65]        :                                       ;COMPUTING 8*BL+CL
+[  66]    0056:                                       FOUND_ROW:
+[  67]    0056: B0 08                                 MOV AL,08H
+[  68]    0058: F6 E0                                 MUL AL
+[  69]    005A: 02 C1                                 ADD AL,CL
+[  70]    005C: BA 04 80                              MOV DX,PORTC1
+[  71]    005F: EE                                    OUT DX,AL
+[  72]        :                                       CODE ENDS
+[  73]        :                                       END START
+[  74]        :                                       
+[  75]        :                                       
+[  76]        :                                       
+[  77]        :                                       
+ 
+===================================================================================================
+ 
+EXE HEADER - bytes from 0000 to 01FF inclusive.
+
+0000: 4D      -   exe signature (M)
+0001: 5A      -   exe signature (Z)
+0002: 60      -   bytes on last page (l.byte)
+0003: 00      -   bytes on last page (h.byte)
+0004: 02      -   512 byte pages in file (l.byte)
+0005: 00      -   512 byte pages in file (h.byte)
+0006: 01      -   relocations (l.byte)
+0007: 00      -   relocations (h.byte)
+0008: 20      -   paragraphs in header (l.byte)
+0009: 00      -   paragraphs in header (h.byte)
+000A: 00      -   minimum memory (l.byte)
+000B: 00      -   minimum memory (h.byte)
+000C: FF      -   maximum memory (l.byte)
+000D: FF      -   maximum memory (h.byte)
+000E: 00      -   SS - stack segment (l.byte)
+000F: 00      -   SS - stack segment (h.byte)
+0010: 00      -   SP - stack pointer (l.byte)
+0011: 00      -   SP - stack pointer (h.byte)
+0012: 77      -   check sum (l.byte)
+0013: 3B      -   check sum (h.byte)
+0014: 00      -   IP - instruction pointer (l.byte)
+0015: 00      -   IP - instruction pointer (h.byte)
+0016: 01      -   CS - code segment (l.byte)
+0017: 00      -   CS - code segment (h.byte)
+0018: 1E      -   relocation table adress (l.byte)
+0019: 00      -   relocation table adress (h.byte)
+001A: 00      -   overlay number (l.byte)
+001B: 00      -   overlay number (h.byte)
+001C: 01      -   signature (l.byte)
+001D: 00      -   signature (h.byte)
+001E: 01      -   relocation table - offset inside segment (l.byte)
+001F: 00      -   relocation table - offset inside segment (h.byte)
+0020: 01      -   relocation table - segment anchor (l.byte)
+0021: 00      -   relocation table - segment anchor (h.byte)
+0022 to 01FF  -   reserved relocation area  (00) 
+
+
+
+
+===================================================================================================
